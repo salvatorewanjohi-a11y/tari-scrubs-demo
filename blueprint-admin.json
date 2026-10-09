@@ -1,0 +1,63 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/wp-admin/edit.php?post_type=product",
+  "login": true,
+  "preferredVersions": {
+    "php": "8.3",
+    "wp": "latest"
+  },
+  "features": {
+    "networking": true
+  },
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "woocommerce"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/salvatorewanjohi-a11y/tari-scrubs-demo/main/tsc.zip"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "unzip",
+      "zipFile": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/salvatorewanjohi-a11y/tari-scrubs-demo/main/images.zip"
+      },
+      "extractToPath": "/wordpress"
+    },
+    {
+      "step": "writeFile",
+      "path": "/wordpress/tsc-setup.php",
+      "data": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/salvatorewanjohi-a11y/tari-scrubs-demo/main/setup.php"
+      }
+    },
+    {
+      "step": "mkdir",
+      "path": "/wordpress/wp-content/mu-plugins"
+    },
+    {
+      "step": "writeFile",
+      "path": "/wordpress/wp-content/mu-plugins/tsc-demo.php",
+      "data": "<?php\n// Demo: photos are already web-sized, so don't make thumbnails.\nadd_filter( 'woocommerce_resize_images', '__return_false' );\nadd_filter( 'woocommerce_background_image_regeneration', '__return_false' );\n"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php define( 'TSC_FAST', true ); require '/wordpress/tsc-setup.php';"
+    }
+  ]
+}
